@@ -97,6 +97,112 @@ p \varpropto \exp\left ( -\left ( \left ( \left ( m_b \right )_k - m \right )^T 
 where $B$ is the covariance of $m_0$ and $R_k$ is the covariance of $d_k$. 
 
 To obtain the optimal model $m$ to maximize the posterior PDF $p$, we minimize the objective function
+\begin{equation}
+2S(m)=((m_b)_k-m)^TB^{-1}((m_b)_k-m)+(d_k-Hm)^T{R_k}^{-1}(d_k-Hm).
+\end{equation}
+By assigning the gradient of the objective function $S(m)$ to be 0, we obtain
+\begin{equation}
+(m_a)_k=(m_b)_k+BH^T(HBH^T+R_k)^{-1}(d_k-H(m_b)_k),
+\end{equation}
+where $(m_a)_k$ is an optimal approximation of $m$ by combining the initial model $(m_b)_k$ and the observation $d_k$, H is the tangent linear approximation of the measurement operator $H$. 
+According to eq. (4), the covariance of $(m_a)_k$, which is denoted by $P_k$, satisfies
+\begin{equation}
+P_k=B_k-B_k\mbox{H}^T(HB_k\mbox{H}^T+R_k)^{-1}\mbox{H}B_k
+\end{equation}
+Eq. (4) and (5) forms the analysis step of the extended Kalman filter (EKF), which is the nonlinear version of the Kalman filter (Kalman, 1960). However, huge computation is required. Denoting the dimension of slowness model $m$ and observation $d$ to be $N_m$ and $N_d$, the computation to generate $(\mbox{H}B_k\mbox{H}^T+R_k)^{-1}$ is $O(N_m^2N_d)$, the memory to store $B_k$ is $O(N_m^2)$, which are beyond the ability of modern computers for high dimension problems. Meanwhile, generating the tangent linear operator H also requires huge computation. Even worse is that the inversing operation may lead to numerical divergence.
+
+EnKF solves these two problems by ensemble approximation. We define the background model ensemble as $\Psi=(\psi_1^k,\psi_2^k,...,\psi_N^k)$, where $k$ is the number of the current updating step, $N$ is the number of model samples, $\psi_n^k, n\in\{1,2,...,N\}$ is a model sample. The initial model ensemble $\Psi_1$ is obtained by adding a spatial low frequency random perturbation field to the initial model $(m_b)_0$. We also generate an observation ensemble $D_k=(d_1^k,d_2^k,...,d_N^k)$ by adding Gaussian noise to the observation $d_k$. To save computation, we stack the sources and seismograms by different source codes in each updating step. Then, the model covariance $B$ and observation covariance $R$ at the $k$-th updating step are approximated as
+\begin{equation}
+\left\{ 
+\begin{aligned}
+& B_k=\Psi_k^{'}(\Psi_k^{'})^T/(N-1) \\
+& R_k=D_k^{'}(D_k^{'})^T/(N-1),
+\end{aligned}
+\right.
+\end{equation}
+where $\Psi_k^{'}=\Psi_k(I-1_N)$ and $D_k^{'}=D_k(I-1_N)$.
+
+By substituting the ensemble approximation eq. (6) into the updating rule eq. (4), we obtain
+\begin{equation}
+(\Psi_a)_k=\Psi_k+\Psi_k^{'}(\mbox{H}\Psi_k^{'})^T\left(\mbox{H}\Psi_k^{'}(\mbox{H}\Psi_k^{'})^T+D_k^{'}(D_k^{'})^T\right)^{-1}(D_k-H\Psi_k),
+\end{equation}where $(\Psi_a)_k$ is the analysis model ensemble, $\mbox{H}\Psi_k^{'}$ is computed as $H\Psi_k-\overline H\Psi_k$, where $\overline H\Psi_k$ is the average of the synthetic records $H\Psi_k$. The tangent linear operator H need not to be generated explicitly. To reduce the computational costs of eq. (7) and eliminate the instability, by assuming $\mbox{H}\Psi_k^{'}$ and $D_k^{'}$ are independent, we obtain
+\begin{equation}
+\left(\mbox{H}\Psi_k^{'}(\mbox{H}(\Psi_k^{'})^T)+D_k^{'}(D_k^{'})^T\right)^{-1}\approx\left((\mbox{H}\Psi_k^{'}+D_k^{'})(\mbox{H}\Psi_k^{'}+D_k^{'})^T\right)^{-1}.
+\end{equation}By the SVD decomposition, we have
+\begin{equation}
+\mbox{H}\Psi_k^{'}+D_k^{'}=USV,
+\end{equation}where U and V are orthogonal matrices, S is a diagonal matrix.
+
+Then, the ensemble updating rule (7) turns to\begin{equation}
+(\Psi_a)_k=\Psi_k+\Psi_k^{'}(\mbox{H}\Psi_k^{'})^TU(SS^T)^{-1}U^T(D_k-H\Psi_k).
+\end{equation}For the real slowness model does not change, the analysis model ensemble $(\Psi_a)_k$ is used directly as the background model ensemble $\Psi_{k+1}$ in the next updating step.
+In eq. (10), terms of the diagonal matrix $S$ with small absolute values correspond to updating directions which are not effectively represented by the ensemble. Consequently, we omit the small values and zeros of $S$ to enhance the stability. Then, at most $N$ columns of $U$ need to be generated. The dominate computational costs in eq. (10) is N forward modeling to generated $H\Psi_k$, and the memory cost is $O(N(N_m+N_d))$. In most applications, the sample number $N$ is chosen between 10 and 100. The computation is less than traditional FWI for the sources and seismograms are stacked. More memory is needed to store model samples if the method is run on one computing node; however, different model samples can be distributed on different nodes to make full use of the memory of a parallel computing cluster, while duplication of the model is also required on each node when traditional FWI is run in parallel on the same cluster.By the ensemble updating rule eq. (10), we apply the EnKF in the seismic inversion and approximate the total inversion with low computation and memory costs. However, in the eq. (10), the updating direction is confined in the space spanned by the background model ensemble $\Psi_k$. In general, if the initial background model ensemble $\Psi_1$ is generated by random perturbation, the low rank updating space cannot provide an effective updating direction which can significantly reduce the data misfit, especially in high dimensional problem where the model parameters are several order of magnitudes more than model samples. Improving the representation ability of the low rank updating space is crucial to provide clear imaging results.
+
+\subsection{Refining the model samples using ESSFWI with self-adaptive regularization factors}Bringing in effective updating directions may improve the representation ability of the low rank updating space spanned by the model samples. ESSFWI can provide such directions with low computational costs. It stacks the seismograms using different source codes in each updating step save computation and suppresses the crosstalk noise. The anisotropic Tikhonov regularization term adds smoothing constraints with different weights in the horizontal and vertical direction. Take the 2D problem for example, the objective function of ESSFWI with anisotropic regularization term is\begin{equation}
+\left\{
+\begin{aligned}
+& S(m)=S_{data}(m)+S_{regu}(m) \\
+& 2S_{data}(m)=||d-Hm||^2=\int_{0}^{T_{max}}\sum_{i=1}^{N_{rec}}||\hat u_o(r_{rec_i},t;f)-u_c(r_{rec_i},t;f)||^2dt \\
+& 2S_{regu}(m)=\lambda_x||W_x||^2+\lambda_z||W_z||^2
+\end{aligned}
+\right.
+\end{equation}where $S_{data}(m)$ is the data misfit, $S_{regu}(m)$ is the anisotropic Tikhonov regularization term, $N_{rec}$ is the number of receivers, $r_{rec_i}$ is the position of the i-th receiver, $f$ is the stacked source using a random source code, $u_c(r_{rec_i},t;f)$ is the synthetic seismogram, $\hat u_o(r_{rec_i},t;f)$ is the stacked seismogram using the same source code, $\lambda_x$ and $\lambda_z$ are regularization factors. $W_x$ and $W_z$ indicate the discontinuity in the X and Z direction, as
+\begin{equation}
+\left\{
+\begin{aligned}
+& ||W_x||^2=\sum_{i=1}^{N_x-1}\sum_{j=1}^{N_z}\left(m(x_{i+1},z_j)-m(x_i,z_j)\right)^2 \\
+& ||W_z||^2=\sum_{i=1}^{N_x}\sum_{j=1}^{N_z-1}\left(m(x_i,z_{j+1})-m(x_i,z_j)\right)^2
+\end{aligned}
+\right.
+\end{equation}Following Tarantola (1984), the gradient of the data misfit $S_{data}(m)$ can be computed as
+\begin{equation}
+G_{data}(m)=\int_{0}^{T_{max}}dt\sum_{i=1}^{N_{rec}}\frac{\partial}{\partial t^2}u^*(r,T_{max}-t;f)u(r,t;f)
+\end{equation}where $r$ is the position, $u^*(r,T_{max}-t;f)$ is the adjoint wavefield generated by propagate the data residual 
+\begin{equation}
+\delta u(r_{rec_i},t;f)=\hat u_o(r_{rec_i},t;f)-u_c(r_{rec_i},t;f)
+\end{equation}backward in time.In our realization of ESSFWI, the updating direction is obtained by the conjugate gradient (CG) method, and the step length is obtained by parabolic fitting. When it is used to refine the model samples in EnKF, we choose the negative gradient direction as the updating direction.
+The regularization factors have a great influence on the inversing results. It is a challenge problem to find proper regularization factors. The EnKF scheme provides an efficient way to adjust the model samples and the regularization factors simultaneously. We define the new model ensemble combining the slowness model and the regularization factors as
+\begin{equation}
+\left\{
+\begin{aligned}
+& \Psi_k=\left(\psi_1^k,\psi_2^k,...,\psi_N^k\right) \\
+& \psi_n^k=\left((\psi_n^k)^T,\lambda_x,\lambda_z\right)^T.
+\end{aligned}
+\right.
+\end{equation}We also expand the definitional domain of function $H$ to the new model sample $\psi_n^k$, as
+\begin{equation}
+H\psi_n^{k}=H\psi_n^{k}
+\end{equation}We denote an updating step of the ESSFWI as
+\begin{equation}
+m_{k+1}=Lm_k.
+\end{equation}Then, we expand the definitional domain of function L to the new model sample as
+\begin{equation}
+L\Psi_n^k=L
+\left(
+\begin{aligned}
+\psi_n^k \\
+\lambda_x \\
+\lambda_z
+\end{aligned}
+\right)
+=
+\left(
+\begin{aligned}
+& L\psi_n^k \\ 
+& \lambda_x \\
+& \lambda_z
+\end{aligned}
+\right).
+\end{equation}Following the ensemble updating rule eq. (7), we obtain the EnFWI as the analysis step
+\begin{equation}
+(\Psi_a)_k=\Psi_k+\Psi_k'(\mbox{H}\Psi_k')^T\left(\mbox{H}\Psi_k'(\mbox{H}\Psi_k')^T+D_k'(D_k')^T\right)^{-1}(D-H\Psi_k)
+\end{equation}and the model step 
+\begin{equation}
+\Psi_{k+1}=L(\Psi_a)_k.
+\end{equation}In numerical experiments, we find that several updating steps of ESSFWI can be combined to accelerate the convergence, as
+\begin{equation}
+\Psi_{k+1}=L^{N_{iter}}(\Psi_a)_k,
+\end{equation}where $N^{iter}$ is typically chosen in [5,10].
 
 
 \begin{acknowledgments}
