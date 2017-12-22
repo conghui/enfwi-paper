@@ -18,7 +18,7 @@
 %  }
 
 \author[C. He]
-  {Conghui He$^{12}$, Yushu Chen$^2$, Bingwei Chen$^{12}$, Haohuan Fu$^{123}$ \\
+  {Conghui He$^{12}$, Yushu Chen$^2$, Bingwei Chen$^{12}$, Yunyue Li, Haohuan Fu$^{123}$ \\
   $^1$ Ministry of Education Key Laboratory for Earth System Modeling, Department of Earth System Science, Tsinghua University, Beijing, China \\
   $^2$ Department of Computer Science and Technology, Tsinghua University, Beijing, China \\
   $^3$ Laboratory for Regional Oceanography and Numerical Modeling, Qingdao National Laboratory for Marine Science and Technology
@@ -47,7 +47,7 @@
 
 
 \begin{summary}
-We develop an ensemble source encoding full-waveform inversion method with self-adaptive regularization (EnFWI), which approximates the total inversion using the ensemble Kalman filter (EnKF) to alleviate the error caused by inaccurate initial model and data noise with high computational efficiency. It refines an ensemble of velocity models simutaneously by iterative incorporating the waveform observation, and approximate the nonlinear evolution of error covariance by the ensemble covariance. To overcome the problem in EnKF that the updating direcitons are confined in the low rank space spanned by the model samples which is lack of representation ability in general, we apply the encoded simultaneous-source FWI (ESSFWI) to refine each model sample, so that the gradient directions with perturbation are introduced to improve the representation ability of the low rank updating space. Along with the velocity, we use the EnKF scheme to adjust the anisotropic regularization factors in order to utilize the smoothing constrains in different directions to further reduce the model error. Experiments show that EnFWI achieves larger convergence range and better tolerance to data noise with less computational costs than traditional FWI method.
+We develop an ensemble source encoding full-waveform inversion method with self-adaptive regularization (EnFWI), which approximates the total inversion using the ensemble Kalman filter (EnKF) to alleviate the error caused by inaccurate initial model and data noise, and further improve the computational efficiency. It refines an ensemble of velocity models simutaneously by iteratively incorporating the waveform observation, and approximate the nonlinear evolution of error covariance by the ensemble covariance. To overcome the problem in EnKF that the updating direcitons are confined in the low rank space spanned by the model samples which is lack of the representation ability in general, we apply the encoded simultaneous-source FWI (ESSFWI) to refine each model sample, so that the gradient directions along with perturbation are introduced to improve the representation ability of the low rank updating space. Along with the velocity, we use the EnKF scheme to adjust the anisotropic regularization factors in order to utilize the smoothing constrains in different directions to further reduce the model error. Experiments show that EnFWI achieves larger convergence range and better tolerance to data noise with less computational costs than the traditional FWI method.
 \end{summary}
 
 \begin{keywords}
@@ -98,7 +98,7 @@ where $B$ is the covariance of $m_0$ and $R_k$ is the covariance of $d_k$.
 
 To obtain the optimal model $m$ to maximize the posterior PDF $p$, we minimize the objective function.
 \begin{equation}
-2S(m)=((m_b)_k-m)^TB^{-1}((m_b)_k-m)+(d_k-Hm)^T{R_k}^{-1}(d_k-Hm).
+2S\left(m\right)=\left(\left(m_b\right)_k-m\right)^TB^{-1}\left(\left(m_b\right)_k-m\right)+\left(d_k-Hm\right)^T{R_k}^{-1}\left(d_k-Hm\right)
 \end{equation}
 
 By assigning the gradient of the objective function $S(m)$ to be 0, we obtain
@@ -361,45 +361,43 @@ We present an EnFWI method with self-adaptive regularization. It approximates th
 
 
 \begin{acknowledgments}
-A number of colleagues have helped with suggestions for the
-improvement of this material and I would particularly like to thank
-xxxxxxxxxxxxxxx.
+A number of colleagues have helped with suggestions for the improvement of this material and I would particularly like to thank xxxxxxxxxxxxxxx.
 \end{acknowledgments}
 
 \begin{thebibliography}{}
-  \bibitem[\protect\citename{Alkhalifah \& Choi }2014]{al} Alkhalifah, T. \& Choi, Y., 2014. \textit{From tomography to full-waveform inversion with a single objective function}, Geophysics, 79, R55-R61.
-  \bibitem[\protect\citename{Ben-Hadj-Ali et al. }2011]{be} Ben-Hadj-Ali, H., Operto, S. \& Virieux, J., 2011. \textit{An efficient frequency-domain full waveform inversion method using simultaneous encoded sources}, Geophysics, 76, R109-R124.
-  \bibitem[\protect\citename{Castellanos et al. }2015]{ca}  Castellanos, C., Metivier, L., Operto, S., Brossier, R. \& Virieux, J., 2015. \textit{Fast full waveform inversion with source encoding and second-order optimization methods}, Geophysical Journal International, 200, 720-744.
-  \bibitem[\protect\citename{Evensen }1994]{ev94}  Evensen, G., 1994. \textit{Sequential data assimilation with a nonlinear quasi-geostrophic model using Monte Carlo methods to forecast error statistics}, Journal of Geophysical Research: Oceans, 99, 10143-10162.
-  \bibitem[\protect\citename{Evensen }2003]{ev03} Evensen, G., 2003. \textit{The Ensemble Kalman Filter: theoretical formulation and practical implementation}, Ocean Dynamics, 53, 343-367.
-  \bibitem[\protect\citename{Evensen }2009]{ev09} Evensen, G., 2009. \textit{The ensemble Kalman filter for combined state and parameter estimation}, Control Systems, IEEE, 29, 83-104.
-  \bibitem[\protect\citename{Krebs et al. }2009]{kr} Krebs, J.R., Anderson, J.E., Hinkley, D., Neelamani, R., Lee, S., Baumstein, A. \& Lacasse, M.-D., 2009. \textit{Fast full-wavefield seismic inversion using encoded sources}, Geophysics, 74, WCC177-WCC188.
-  \bibitem[\protect\citename{Luo \& Schuster }1991]{ls} Luo, Y. \& Schuster, G.T., 1991. \textit{Wave-equation traveltime inversion}, Geophysics, 56, 645-653.
-\bibitem[\protect\citename{Luo \& Wu }2015]{lw} Luo, J. and Wu, R.-S., 2015. Seismic envelope inversion: reduction of local minima and noise resistance, Geophysical Prospecting, 63, 597-614.
-\bibitem[\protect\citename{Tarantola \& Valette }1982]{ta82} Tarantola, A. \& Valette, B., 1982. Generalized nonlinear inverse problems solved using the least squares criterion, Rev Geophys, 20, 219-232.
-\bibitem[\protect\citename{Woodward et al. }2008]{wo} Woodward, M.J., Nichols, D., Zdraveva, O., Whitfield, P. \& Johns, T., 2008. \textit{A decade of tomography}, GEOPHYSICS, 73, VE5-VE11.
-\bibitem[\protect\citename{Wu et al. }2014]{wu} Wu, R.-S., Luo, J. \& Wu, B., 2014. Seismic envelope inversion and modulation signal model, Geophysics, 79, WA13-WA24.
-\bibitem[\protect\citename{Al-Yahya }1989]{al} Al-Yahya, K., 1989. \textit{Velocity analysis by iterative profile migration}, Geophysics, 54, 718?729.
-\bibitem[\protect\citename{Hole }1992]{ho} Hole, J. A., 1992. Nonlinear high-resolution three-dimensional seismic travel time tomography, Journal of Geophysical Research, 97, 6553?6562.
-\bibitem[\protect\citename{Bunks et al. }1995]{bu} Bunks, C., F.M. Saleck, S. Zaleski, and G. Chavent, 1995. Multiscale seismic waveform inversion,  Geophysics, 60, 1457?1473.
-\bibitem[\protect\citename{Lambar$\acute{\textrm{e}}$ }2008]{la} Lambar$\acute{\textrm{e}}$, G., 2008. Stereotomography: Geophysics, 73, no. 5, VE25?VE34.
-\bibitem[\protect\citename{Jin et al. }2008]{ji} Jin, L., Sen, M.K. \& Stoffa, P.L., 2008. One-dimensional prestack seismic waveform inversion using ensemble Kalman filter, SEG Annu. Meet. Las Vegas, USA.
-%Kalman, E., 1960. A new approach to linear filtering and prediction problems. Journal of Fluids Engineering, 82(1), 35-45.
-\bibitem[\protect\citename{Operto et al. }2004]{op} Operto, S., C. Ravaut, L. Improta, J. Virieux, A. Herrero, \& P. Dellaversana, 2004. \textit{Quantitative imaging of complex structures from dense wide aperture seismic data by multiscale traveltime and waveform inversions: A case study}, Geophysical Prospecting, 52, 625-651.
-\bibitem[\protect\citename{Pratt \& Goulty }1991]{pg} Pratt, R. G., \& N. R. Goulty, 1991. \textit{Combining wave-equation imaging with traveltime tomography to form high-resolution images from crosshole data}, Geophysics, 56, 208-224.
-\bibitem[\protect\citename{Priolo \& Chiaruttini }2003]{pc} Priolo, E., \& C. Chiaruttini, 2003. \textit{Analytical and numerical analysis of tomographic resolution with band-limited signals}, Geophysics, 68, 600-613.
-\bibitem[\protect\citename{Quan \& Harris }2008]{qh} Quan, Y. \& Harris, J.M., 2008. Stochastic seismic inversion using both waveformand traveltime data and its application to time-lapse monitoring, SEG Annu. Meet. Las Vegas, USA.
-\bibitem[\protect\citename{Sava \& Biondi }2004]{sb} Sava, P., and B. Biondi, 2004. Wave-equation migration velocity analysis?Part I: Theory, \textit{Geophysical Prospecting}, 52, 593?606.
-\bibitem[\protect\citename{Shipp \& Singh }2002]{ss} Shipp, R. M., \& S. C. Singh, 2002. \textit{Two-dimensional full wavefield inversion of wide-aperture marine seismic streamer data}, Geophysical Journal International, 151, 325-344.
-\bibitem[\protect\citename{Shin \& Cha }2008]{sc08} Shin, C., and Y. H. Cha, 2008. Waveform inversion in the Laplace domain: Geophysical Journal International, 173, 922?931.
-\bibitem[\protect\citename{Ravaut et al. }2004]{ra} Ravaut, C., S. Operto, L. Improta, J. Virieux, A. Herrero, and P. Dell' Aversana, 2004. Multiscale imaging of complex structures from multifold wide-aperture seismic data by frequency-domain full-waveform tomography: Application to a thrust belt, Geophysical Journal International, 159, 1032?1056.
-\bibitem[\protect\citename{Shin \& Cha }2009]{sc09} Shin, C., and Y. H. Cha, 2009. Waveform inversion in the Laplace-Fourier domain: Geophysical Journal International, 177, 1067?1079.
-\bibitem[\protect\citename{Symes \& Carazzone }1991]{sc} Symes, W., and J. J. Carazzone, 1991. Velocity inversion by differential semblance optimization: Geophysics, 56, 654?663.
-\bibitem[\protect\citename{Vigh \emph{et al.} }2011]{vigh} Vigh, D., J. Kapoor, N. Moldoveanu, and H. Li, 2011. Breakthrough acquisition and technologies for subsalt imaging, Geophysics, 76, no. 5, WB41?WB51.
-\bibitem[\protect\citename{Wang et al. }2014]{wa} Wang, H., S. C. Singh, and H. Calandra, 2014. \textit{Integrated inversion using combined wave-equation tomography and full waveform inversion}, Geophysical Journal International, 198, 430?446.
-  \bibitem[\protect\citename{Tarantola }1984]{ta84} Tarantola, A., 1984. \textit{Inversion of seismic reflection data in the acoustic approximation}, Geophysics, 49, 1259-1266.
-  \bibitem[\protect\citename{Virieux \& Operto }2009]{vi}  Virieux, J. \& Operto, S., 2009. \textit{An overview of full-waveform inversion in exploration geophysics}, Geophysics, 74, WCC1-WCC26.
+\bibitem[\protect\citename{Al-Yahya }1989]{al} Al-Yahya, K., 1989. Velocity analysis by iterative profile migration, \textit{Geophysics}, \textbf{54}, 718-729.
+  \bibitem[\protect\citename{Alkhalifah \& Choi }2014]{al} Alkhalifah, T. \& Choi, Y., 2014. From tomography to full-waveform inversion with a single objective function, \textit{Geophysics}, \textbf{79}, R55-R61.
+  \bibitem[\protect\citename{Ben-Hadj-Ali et al. }2011]{be} Ben-Hadj-Ali, H., Operto, S. \& Virieux, J., 2011. An efficient frequency-domain full waveform inversion method using simultaneous encoded sources, \textit{Geophysics}, \textbf{76}, R109-R124.
+\bibitem[\protect\citename{Bunks et al. }1995]{bu} Bunks, C., F.M. Saleck, S. Zaleski, and G. Chavent, 1995. Multiscale seismic waveform inversion,  \textit{Geophysics}, \textbf{60}, 1457-1473.
+  \bibitem[\protect\citename{Castellanos et al. }2015]{ca}  Castellanos, C., Metivier, L., Operto, S., Brossier, R. \& Virieux, J., 2015. Fast full waveform inversion with source encoding and second-order optimization methods, \textit{Geophysical Journal International}, \textbf{200}, 720-744.
+  \bibitem[\protect\citename{Evensen }1994]{ev94}  Evensen, G., 1994. Sequential data assimilation with a nonlinear quasi-geostrophic model using Monte Carlo methods to forecast error statistics, \textit{Journal of Geophysical Research: Oceans}, \textbf{99}, 10143-10162.
+  \bibitem[\protect\citename{Evensen }2003]{ev03} Evensen, G., 2003. The ensemble Kalman Filter: theoretical formulation and practical implementation, \textit{Ocean Dynamics}, \textbf{53}, 343-367.
+  \bibitem[\protect\citename{Evensen }2009]{ev09} Evensen, G., 2009. The ensemble Kalman filter for combined state and parameter estimation, \textit{Control Systems, IEEE}, \textbf{29}, 83-104.
+\bibitem[\protect\citename{Hole }1992]{ho} Hole, J. A., 1992. Nonlinear high-resolution three-dimensional seismic travel time tomography, \textit{Journal of Geophysical Research}, \textbf{97}, 6553-6562.
+\bibitem[\protect\citename{Jin et al. }2008]{ji} Jin, L., Sen, M.K. \& Stoffa, P.L., 2008. One-dimensional prestack seismic waveform inversion using ensemble Kalman filter, \textit{SEG Annu. Meet. Las Vegas, USA}.
+  \bibitem[\protect\citename{Krebs et al. }2009]{kr} Krebs, J.R., Anderson, J.E., Hinkley, D., Neelamani, R., Lee, S., Baumstein, A. \& Lacasse, M.-D., 2009. Fast full-wavefield seismic inversion using encoded sources, \textit{Geophysics}, \textbf{74}, WCC177-WCC188.
+  \bibitem[\protect\citename{Lambar$\acute{\textrm{e}}$ }2008]{la} Lambar$\acute{\textrm{e}}$, G., 2008. Stereotomography, \textit{Geophysics}, \textbf{73}, no. 5, VE25-VE34.
+  \bibitem[\protect\citename{Luo \& Schuster }1991]{ls} Luo, Y. \& Schuster, G.T., 1991. Wave-equation traveltime inversion, \textit{Geophysics}, \textbf{56}, 645-653.
+\bibitem[\protect\citename{Luo \& Wu }2015]{lw} Luo, J. and Wu, R.-S., 2015. Seismic envelope inversion: reduction of local minima and noise resistance, \textit{Geophysical Prospecting}, \textbf{63}, 597-614.
+\bibitem[\protect\citename{Operto et al. }2004]{op} Operto, S., C. Ravaut, L. Improta, J. Virieux, A. Herrero, \& P. Dellaversana, 2004. Quantitative imaging of complex structures from dense wide aperture seismic data by multiscale traveltime and waveform inversions: A case study, \textit{Geophysical Prospecting}, \textbf{52}, 625-651.
+\bibitem[\protect\citename{Pratt \& Goulty }1991]{pg} Pratt, R. G., \& N. R. Goulty, 1991. Combining wave-equation imaging with traveltime tomography to form high-resolution images from crosshole data, \textit{Geophysics}, \textbf{56}, 208-224.
+\bibitem[\protect\citename{Priolo \& Chiaruttini }2003]{pc} Priolo, E., \& C. Chiaruttini, 2003. Analytical and numerical analysis of tomographic resolution with band-limited signals, \textit{Geophysics}, \textbf{68}, 600-613.
+\bibitem[\protect\citename{Quan \& Harris }2008]{qh} Quan, Y. \& Harris, J.M., 2008. Stochastic seismic inversion using both waveformand traveltime data and its application to time-lapse monitoring, \textit{SEG Annu. Meet. Las Vegas, USA}.
+\bibitem[\protect\citename{Ravaut et al. }2004]{ra} Ravaut, C., S. Operto, L. Improta, J. Virieux, A. Herrero, and P. Dell' Aversana, 2004. Multiscale imaging of complex structures from multifold wide-aperture seismic data by frequency-domain full-waveform tomography: Application to a thrust belt, \textit{Geophysical Journal International}, \textbf{159}, 1032-1056.
+\bibitem[\protect\citename{Sava \& Biondi }2004]{sb} Sava, P., and B. Biondi, 2004. Wave-equation migration velocity analysis--Part I: Theory, \textit{Geophysical Prospecting}, \textbf{52}, 593-606.
+\bibitem[\protect\citename{Shipp \& Singh }2002]{ss} Shipp, R. M., \& S. C. Singh, 2002. Two-dimensional full wavefield inversion of wide-aperture marine seismic streamer data, \textit{Geophysical Journal International}, \textbf{151}, 325-344.
+\bibitem[\protect\citename{Shin \& Cha }2008]{sc08} Shin, C., and Y. H. Cha, 2008. Waveform inversion in the Laplace domain, \textit{Geophysical Journal International}, \textbf{173}, 922-931.
+\bibitem[\protect\citename{Shin \& Cha }2009]{sc09} Shin, C., and Y. H. Cha, 2009. Waveform inversion in the Laplace-Fourier domain, \textit{Geophysical Journal International}, \textbf{177}, 1067-1079.
+\bibitem[\protect\citename{Symes \& Carazzone }1991]{sc} Symes, W., and J. J. Carazzone, 1991. Velocity inversion by differential semblance optimization, \textit{Geophysics}, \textbf{56}, 654-663.
+  \bibitem[\protect\citename{Tarantola }1984]{ta84} Tarantola, A., 1984. Inversion of seismic reflection data in the acoustic approximation, \textit{Geophysics}, \textbf{49}, 1259-1266.
+\bibitem[\protect\citename{Tarantola \& Valette }1982]{ta82} Tarantola, A. \& Valette, B., 1982. Generalized nonlinear inverse problems solved using the least squares criterion, \textit{Rev Geophys}, \textbf{20}, 219-232.
+\bibitem[\protect\citename{Vigh \emph{et al.} }2011]{vigh} Vigh, D., J. Kapoor, N. Moldoveanu, and H. Li, 2011. Breakthrough acquisition and technologies for subsalt imaging, \textit{Geophysics}, \textbf{76}, no. 5, WB41-WB51.
+  \bibitem[\protect\citename{Virieux \& Operto }2009]{vi}  Virieux, J. \& Operto, S., 2009. An overview of full-waveform inversion in exploration geophysics, \textit{Geophysics}, \textbf{74}, WCC1-WCC26.
+\bibitem[\protect\citename{Wang et al. }2014]{wa} Wang, H., S. C. Singh, and H. Calandra, 2014. Integrated inversion using combined wave-equation tomography and full waveform inversion, \textit{Geophysical Journal International}, \textbf{198}, 430-446.
+\bibitem[\protect\citename{Woodward et al. }2008]{wo} Woodward, M.J., Nichols, D., Zdraveva, O., Whitfield, P. \& Johns, T., 2008. A decade of tomography, \textit{GEOPHYSICS}, \textbf{73}, VE5-VE11.
+\bibitem[\protect\citename{Wu et al. }2014]{wu} Wu, R.-S., Luo, J. \& Wu, B., 2014. Seismic envelope inversion and modulation signal model, \textit{Geophysics}, \textbf{79}, WA13-WA24.
 
+%Kalman, E., 1960. A new approach to linear filtering and prediction problems. Journal of Fluids Engineering, 82(1), 35-45.
 \end{thebibliography}
 
 
