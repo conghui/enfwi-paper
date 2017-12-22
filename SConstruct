@@ -1,0 +1,31 @@
+# -*- mode: python -*-
+# SCons build file
+
+import os
+
+# Use this to inherit the PATH environmental variable if necessary.
+env = Environment(ENV = os.environ)
+
+env.Replace(PDFLATEX='pdflatex')
+env.Replace(BIBTEX='bibtex')
+
+# Look in standard directory ~/texmf for .sty files.
+env.SetDefault(TEXMFHOME=os.path.join(os.environ['HOME'], 'texmf'))
+
+# listing your files and depedencies
+main   = 'enfwi'
+
+src_list   = [main + '.tex']
+
+pdf_target = main + '.pdf'
+
+# create the pdf file
+pdf = env.PDF(pdf_target, src_list)
+
+# clean
+env.Clean(pdf, main + '.synctex.gz')
+env.Clean(pdf, main + '.pdfsync')
+
+
+# set default
+Default(pdf)
